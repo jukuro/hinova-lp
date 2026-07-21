@@ -276,5 +276,23 @@
   </div>
 </footer>
 
+<script>
+/* 紹介元コード(?ref)の引き継ぎ。見た目・文言・CTAは変更しない。
+   URLに ?ref=HNP... があれば、申込リンクにコードを不可視で引き継ぐだけ。 */
+(function () {
+  try {
+    var ref = new URLSearchParams(location.search).get('ref');
+    if (!ref || !/^HNP[A-Z2-9]{3,10}$/.test(ref)) return;
+    document.querySelectorAll('a[data-signup], a[href*="hinova-biz"]').forEach(function (a) {
+      var u = new URL(a.href, location.href);
+      u.searchParams.set('ref', ref);
+      a.href = u.toString();
+    });
+    document.querySelectorAll('a[href^="mailto:"]').forEach(function (a) {
+      a.href += (a.href.indexOf('?') >= 0 ? '&' : '?') + 'body=' + encodeURIComponent('\n\n[ref:' + ref + ']');
+    });
+  } catch (e) { /* 失敗しても何もしない */ }
+})();
+</script>
 </body>
 </html>
